@@ -177,7 +177,8 @@ function changeColor(button) {
 
 // Change brush size
 function changeBrushSize(value) {
-  brushSize = Number.parseInt(value);
+  // Adjust for smaler or bigger screen
+  brushSize = (Number.parseInt(value) * width) / 500;
   drawGfx.strokeWeight(brushSize);
 
   brushSizeTitle.innerHTML = `Size: ${value}`;
