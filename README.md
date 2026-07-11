@@ -10,6 +10,7 @@ A creative coding installation using p5.js and WebSocket. Visitors draw and colo
 
 > <img width="auto" height="250" alt="Animated Projection" src="https://github.com/user-attachments/assets/4057534d-4404-4217-82c9-271c9d7ee732" />
 
+_⚠️ **Note** ⚠️: This project only support mouse input for now. It's very highly recommended to use laptop / PC to open this project._
 
 ## ✨ Inspiration
 
@@ -30,27 +31,32 @@ Inspired by that experience, I created a web-based version using p5.js and WebSo
 ## 🏋️ Challenges & Solutions
 
 #### 1. Coding References
-*Challenge*: It's been a long time since I make something in p5js, and this project use of a lot of p5js functions and parameters.
+_Challenge_: It's been a long time since I make something in p5js, and this project use of a lot of p5js functions and parameters.
 
-*Solution*: I had to jump into p5js reference site a lot to know how to do certain things.
+_Solution_: I had to jump into p5js reference site a lot to know how to do certain things.
 
 #### 2. Connect `draw` and `projection` sketch using Websocket
-*Challenge*: Back in the days I only make an art per an index.html, and this project need to be run on different devices (at least 1 for drawing and 1 for projection).
+_Challenge_: Back in the days I only make an art per an index.html, and this project need to be run on different devices (at least 1 for drawing and 1 for projection).
 
-*Solution*: Watching The Coding Train's video about websocket.
+_Solution_: Watching The Coding Train's video about websocket.
 
 #### 3. Assets collection
-*Challenge*: In this typical of project, I don't want to use AI generated art.
+_Challenge_: In this typical of project, I don't want to use AI generated art.
 
-*Solution*: Jump into free-royalty asset sites like pixabay (for audio), vecteezy and flaticon (for drawing template). Also because the drawing templates are transparent, I had to fill the proper area of each template into white in Photopea so the default result has a baseline color.
+_Solution_: Jump into free-royalty asset sites like pixabay (for audio), vecteezy and flaticon (for drawing template). Also because the drawing templates are transparent, I had to fill the proper area of each template into white in Photopea so the default result has a baseline color.
 
 #### 4. Package / libraries
-*Challenge*: Usually, CDN is just enough for typical p5js projects, but this project need to be run on a server due to how Websocket works. Also, it turned out p5js is a little bit `extra`. 
+_Challenge_: Usually, CDN is just enough for typical p5js projects, but this project need to be run on a server due to how Websocket works. Also, it turned out p5js is a little bit `extra`. 
 
-*Solution:* I ask LLM, they tell me to use combination of `npm` packages for `express` and `socket.io`, while using downloaded `p5.min.js` for p5js.
+_Solution_: I ask LLM, they tell me to use combination of `npm` packages for `express` and `socket.io`, while using downloaded `p5.min.js` for p5js.
 
 #### 5. Deploy to Railway
-*Challenge*: It runs on my localhost, why not in the production?
+_Challenge_: It runs on my localhost, why not in the production?
 
-*Solution*: Adjust PORT configuration in `server.js` and change `io.connect()` within both sketch.js (`draw` and `projection` sub-folder). Thanks to LLM.
+_Solution_: Adjust PORT configuration in `server.js` and change `io.connect()` within both sketch.js (`draw` and `projection` sub-folder). Thanks to LLM.
 
+## ⚙️ Tech Stack
+- [p5js](https://p5js.org/) - a friendly tool for learning to code and make art
+- [Node.js](https://nodejs.org/en/) - a free, open-source, cross-platform JavaScript runtime environment
+- [Express.js](https://expressjs.com/) - Node.js web application framework
+- [Socket.IO](https://socket.io/) - bidirectional and low-latency communication for every platform
