@@ -25,7 +25,6 @@ const colors = [
   "black",
 ];
 let currentColor;
-const DEFAULT_BACKGROUND = "white";
 
 // DOM elements
 const objectTitle = document.getElementById("object-title");
@@ -43,6 +42,7 @@ let drawGfx = null;
 
 async function setup() {
   createCanvas(500, 500);
+  noStroke();
   // imageMode(CENTER);
 
   drawGfx = createGraphics(width, height);
@@ -67,7 +67,7 @@ async function setup() {
 }
 
 function draw() {
-  background(DEFAULT_BACKGROUND);
+  transparentGrid();
   // Preview cursor
   overlayGfx.clear();
 
@@ -122,9 +122,22 @@ function drawObjectTemplate(index) {
 }
 
 function resetObject() {
-  background(DEFAULT_BACKGROUND);
   drawGfx.clear();
   drawObjectTemplate(objectIndex);
+}
+
+const GRID_SIZE = 10;
+function transparentGrid() {
+  for (let x = 0; x < width / GRID_SIZE; x++) {
+    for (let y = 0; y < height / GRID_SIZE; y++) {
+      let index = GRID_SIZE * y + x;
+      if (GRID_SIZE % 2 == 0 && y % 2 == 1) index++;
+      index %= 2;
+
+      fill([255, 220][index]);
+      rect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE);
+    }
+  }
 }
 
 function changeColor(button) {
