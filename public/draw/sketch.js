@@ -55,7 +55,7 @@ async function setup() {
 
   // Set spaceObjects p5.image from their src
   for (const spaceObject of spaceObjects) {
-    spaceObject.img = await loadImage(`../assets/${spaceObject.src}`);
+    spaceObject.img = await loadImage(`../assets/template/${spaceObject.src}`);
   }
 
   // First object shown
@@ -78,7 +78,7 @@ function draw() {
   overlayGfx.circle(mouseX, mouseY, drawGfx.strokeWeight());
 
   // The real draw
-  if (mouseIsPressed) {
+  if (mouseIsPressed && mouseButton.left) {
     drawGfx.stroke(currentColor);
     drawGfx.line(pmouseX, pmouseY, mouseX, mouseY);
   }

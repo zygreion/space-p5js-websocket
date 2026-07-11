@@ -6,6 +6,14 @@ const SEED = 7_20_13_0_8_5_24_12_20_8_25_25_24;
 let earth;
 let stars = [];
 let drawnObjects = [];
+let dummyObjectDatas = [
+  { type: "asteroid", imageData: "../assets/colored/asteroid_c.png" },
+  { type: "monster", imageData: "../assets/colored/monster_c.png" },
+  { type: "robot", imageData: "../assets/colored/robot_c.png" },
+  { type: "rocket", imageData: "../assets/colored/rocket_c.png" },
+  { type: "technology", imageData: "../assets/colored/technology_c.png" },
+  { type: "saturn", imageData: "../assets/colored/saturn_c.png" },
+];
 
 // Socket configuration
 let socket;
@@ -17,7 +25,7 @@ async function setup() {
   imageMode(CENTER);
 
   // Background object
-  earth = await loadImage("../assets/worldwide_colored.png");
+  earth = await loadImage("../assets/colored/worldwide_c.png");
   earth.resize(600, 0);
 
   generateStars(100);
@@ -25,6 +33,11 @@ async function setup() {
   // Sockets connection
   socket = io();
   socket.on("draw", newDrawing);
+
+  // Dummy objects
+  for (const data of dummyObjectDatas) {
+    newDrawing(data);
+  }
 }
 
 function draw() {
@@ -92,7 +105,7 @@ async function newDrawing(data) {
 }
 
 const SPEED = 0.001;
-const BOUNCE_PADDING = 0.25;
+const BOUNCE_PADDING = 0.125;
 function drawObjects() {
   for (const object of drawnObjects) {
     push();
