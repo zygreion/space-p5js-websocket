@@ -43,11 +43,12 @@ let drawGfx = null;
 async function setup() {
   createCanvas(500, 500);
   noStroke();
-  // imageMode(CENTER);
 
+  // drawGfx is the canvas to draw on
   drawGfx = createGraphics(width, height);
   drawGfx.noStroke();
 
+  // overlayGfx is the canvas to draw the preview (cursor) on
   overlayGfx = createGraphics(width, height);
   overlayGfx.noStroke();
 
@@ -58,7 +59,7 @@ async function setup() {
     spaceObject.img = await loadImage(`../assets/template/${spaceObject.src}`);
   }
 
-  // First object shown
+  // First render
   resetObject();
   changeBrushSize(brushSizeInput.value);
 
@@ -68,14 +69,7 @@ async function setup() {
 
 function draw() {
   transparentGrid();
-  // Preview cursor
-  overlayGfx.clear();
-
-  let c = color(currentColor);
-  c.setAlpha(100);
-
-  overlayGfx.fill(c);
-  overlayGfx.circle(mouseX, mouseY, drawGfx.strokeWeight());
+  drawCursor();
 
   // The real draw
   if (mouseIsPressed && mouseButton.left) {
@@ -87,6 +81,18 @@ function draw() {
   image(overlayGfx, 0, 0);
 }
 
+// Draw preview cursor above drawGfx layer
+function drawCursor() {
+  overlayGfx.clear();
+
+  let c = color(currentColor);
+  c.setAlpha(100);
+
+  overlayGfx.fill(c);
+  overlayGfx.circle(mouseX, mouseY, drawGfx.strokeWeight());
+}
+
+// Predetermined color swatch button using colors array
 function generateHTMLButtons() {
   for (const c of colors) {
     let button = createButton(null);
@@ -96,18 +102,21 @@ function generateHTMLButtons() {
     button.style("margin", "0 0.125rem");
     button.mousePressed(() => changeColor(button.elt));
 
+    // Set first color to draw to red
     if (c === "red") {
       changeColor(button.elt);
     }
   }
 }
 
+// Change object template to draw using Prev and Next button
 function addIndexBy(n) {
   if (n < 0) n += spaceObjects.length;
   objectIndex = (objectIndex + n) % spaceObjects.length;
   resetObject();
 }
 
+// Draw object template using current objectIndex
 function drawObjectTemplate(index) {
   const img = spaceObjects[index].img;
 
@@ -121,11 +130,14 @@ function drawObjectTemplate(index) {
   objectTitle.innerHTML = `Object: ${spaceObjects[index].name}`;
 }
 
+// Reset drawGfx layer
 function resetObject() {
   drawGfx.clear();
   drawObjectTemplate(objectIndex);
 }
 
+// Draw transparent grid at the bottom of canvas
+// This grid doesn't drawn in drawGfx layer
 const GRID_SIZE = 10;
 function transparentGrid() {
   for (let x = 0; x < width / GRID_SIZE; x++) {
@@ -140,16 +152,19 @@ function transparentGrid() {
   }
 }
 
+// Change current color
 function changeColor(button) {
   currentColor = button.style.backgroundColor;
   colorTitle.innerHTML = `Color: ${currentColor}`;
 }
 
+// Change brush size
 function changeBrushSize(value) {
   drawGfx.strokeWeight(Number.parseFloat(value));
   brushSizeTitle.innerHTML = `Size: ${value}`;
 }
 
+// Emit draw event to server
 function submit() {
   const imageData = drawGfx.elt.toDataURL("image/png");
 

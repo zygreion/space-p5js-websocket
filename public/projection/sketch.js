@@ -26,10 +26,10 @@ async function setup() {
   randomSeed(SEED);
   imageMode(CENTER);
 
-  // Music
+  // Load background music
   bgMusic = createAudio("../assets/audio/leberch-space-ambient-509783.mp3");
 
-  // Background object
+  // Load background object
   earth = await loadImage("../assets/colored/worldwide_c.png");
   earth.resize(600, 0);
 
@@ -55,7 +55,7 @@ function draw() {
   drawObjects();
 }
 
-// Sun and earth
+// Draw simple sun
 function drawSun(x, y) {
   for (let i = 2; i >= 0; i--) {
     fill(255, 165, 0, 255 / 2 ** i);
@@ -63,6 +63,7 @@ function drawSun(x, y) {
   }
 }
 
+// Draw and rotate earth background
 function drawEarth(x, y) {
   push();
   translate(x, y);
@@ -71,7 +72,7 @@ function drawEarth(x, y) {
   pop();
 }
 
-// Star creation
+// Populate blinking stars
 function generateStars(n) {
   for (let i = 0; i < n; i++) {
     stars.push({
@@ -82,6 +83,7 @@ function generateStars(n) {
   }
 }
 
+// Draw blinking stars
 function drawStars() {
   fill("white");
 
@@ -92,7 +94,7 @@ function drawStars() {
   }
 }
 
-// Hand drawn objects from socket
+// Load hand drawn objects from socket and add them to drawnObjects
 async function newDrawing(data) {
   const newImage = await loadImage(data.imageData);
   newImage.resize(100, 0);
@@ -109,13 +111,17 @@ async function newDrawing(data) {
   drawnObjects.push(newObject);
 }
 
+// Draw and update drawnObjects
 const SPEED = 0.001;
 const BOUNCE_PADDING = 0.125;
 function drawObjects() {
   for (const object of drawnObjects) {
     push();
 
+    // Position
     translate(object.pos.x * width, object.pos.y * height);
+
+    // Scale, rotate, squishy
     scale(sin(frameCount / 100) / 8 + 1 / 8 + 0.75);
     rotate(object.rotation + (frameCount + object.offsetCycle) / 700);
 
@@ -126,7 +132,8 @@ function drawObjects() {
     const nextPos = getObjectNextPos(object);
     let isColliding = true;
 
-    // drawnObject has x and y values between 0 and 1
+    // drawnObject has position.x and position.y values between 0 and 1
+    // Bounce if it hits the edge
     if (abs(nextPos.x - 0.5) >= 0.5 + BOUNCE_PADDING) {
       object.dir.x *= -1;
       isColliding = false;
@@ -136,17 +143,17 @@ function drawObjects() {
       isColliding = false;
     }
 
+    // Don't recalculate next position if not bouncing
     object.pos = isColliding ? getObjectNextPos(object) : nextPos;
 
     pop();
   }
 }
 
+// Calculate next position
 function getObjectNextPos(object) {
   return p5.Vector.add(object.pos, p5.Vector.mult(object.dir, SPEED));
 }
-
-// kalo ada error dijelasin (5d)
 
 // Utility functions
 function windowResized() {
@@ -158,6 +165,7 @@ function doubleClicked() {
   fullscreen(!fs);
 }
 
+// Music can't be autoplayed and need at least 1 interaction before it starts
 function mouseClicked() {
   bgMusic.loop();
 }
