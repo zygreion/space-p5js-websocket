@@ -1,0 +1,75 @@
+.html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.wrapper {
+  width: 80%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: inherit;
+  align-items: inherit;
+  margin-bottom: 5rem;
+}
+
+.title {
+  display: block;
+}
+
+.sections-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: 100%;
+}
+
+section {
+  width: inherit;
+  height: inherit;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem;
+
+  min-height: 20rem;
+  border: 1px solid black;
+}
+.draw-section {
+  background-color: lightblue;
+}
+.projection-section {
+  background-color: lightgreen;
+}
+
+section > a {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 20rem;
+
+  /* background-color: purple; */
+}
