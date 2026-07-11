@@ -2,8 +2,10 @@
 // Easter egg (5e)
 const SEED = 7_20_13_0_8_5_24_12_20_8_25_25_24;
 
-// Data structures
 let earth;
+let bgMusic;
+
+// Data structures
 let stars = [];
 let drawnObjects = [];
 let dummyObjectDatas = [
@@ -23,6 +25,9 @@ async function setup() {
   noStroke();
   randomSeed(SEED);
   imageMode(CENTER);
+
+  // Music
+  bgMusic = createAudio("../assets/audio/leberch-space-ambient-509783.mp3");
 
   // Background object
   earth = await loadImage("../assets/colored/worldwide_c.png");
@@ -151,4 +156,8 @@ function windowResized() {
 function doubleClicked() {
   let fs = fullscreen();
   fullscreen(!fs);
+}
+
+function mouseClicked() {
+  bgMusic.loop();
 }
