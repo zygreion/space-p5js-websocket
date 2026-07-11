@@ -63,7 +63,7 @@ async function setup() {
   changeBrushSize(brushSizeInput.value);
 
   // Sockets connection
-  socket = io.connect("http://localhost:3000");
+  socket = io();
 }
 
 function draw() {

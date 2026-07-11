@@ -23,7 +23,7 @@ async function setup() {
   generateStars(100);
 
   // Sockets connection
-  socket = io.connect("http://localhost:3000");
+  socket = io();
   socket.on("draw", newDrawing);
 }
 
