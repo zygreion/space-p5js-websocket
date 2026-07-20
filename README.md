@@ -1,7 +1,9 @@
 
 # 🚀 Space Art p5js Websocket
 
-A creative coding installation using p5.js and WebSocket. Visitors draw and color space-themed objects on their devices, then submit them to a shared projection. Drawings from multiple users are synchronized in real time and remain on the projection until the projection page is refreshed or closed.
+A creative coding installation using p5.js and WebSocket. Visitors draw and color space-themed objects on their devices, then submit them to a shared projection. Drawings from multiple users (touch devices supported) are synchronized in real time and remain on the projection until the projection page is refreshed or closed.
+
+[Try it now](https://space-art-p5js-websocket.up.railway.app/)
 
 **Draw and Project**
 > <img width="auto" height="300" alt="Draw and Project" src="https://github.com/user-attachments/assets/8f7377bf-09da-43bf-aa05-1077b8bf2481" />
@@ -9,8 +11,6 @@ A creative coding installation using p5.js and WebSocket. Visitors draw and colo
 **Animated Projection**
 
 > <img width="auto" height="250" alt="Animated Projection" src="https://github.com/user-attachments/assets/4057534d-4404-4217-82c9-271c9d7ee732" />
-
-_⚠️ **Note** ⚠️: This project only support mouse input for now. It's very highly recommended to use laptop / PC to open this project._
 
 ## ✨ Inspiration
 
