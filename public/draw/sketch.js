@@ -24,7 +24,7 @@ const colors = [
   "brown",
   "black",
 ];
-let currentColor;
+let currentColor = colors[4];
 
 // DOM elements
 const objectTitle = document.getElementById("object-title");
@@ -33,15 +33,24 @@ const brushSizeTitle = document.getElementById("brush-size-title");
 const brushSizeInput = document.getElementById("brush-size-input");
 
 // Socket configuration
-let socket;
+let socket = null;
 
-// Other configuration
-const imagePadding = 50;
+// Other configurations
+const CURSOR_OPACITY = 100;
+const GRID_SIZE = 10;
+const imagePadding = 0.1; // 10%
+
 let overlayGfx = null;
 let drawGfx = null;
+let brushSize = 0;
 
 async function setup() {
-  createCanvas(500, 500);
+  const size = min(
+    500,
+    windowWidth < windowHeight ? windowWidth : windowHeight,
+  );
+
+  canvas = createCanvas(size, size);
   noStroke();
 
   // drawGfx is the canvas to draw on
@@ -57,23 +66,35 @@ async function setup() {
   // Set spaceObjects p5.image from their src
   for (const spaceObject of spaceObjects) {
     spaceObject.img = await loadImage(`../assets/template/${spaceObject.src}`);
+
+    if (spaceObject.img.width > spaceObject.img.height) {
+      spaceObject.img.resize(width * (1 - imagePadding / 2), 0);
+    } else {
+      spaceObject.img.resize(0, height * (1 - imagePadding / 2));
+    }
   }
+
+  // Touch screen event listeners
+  canvas.elt.addEventListener("touchstart", handleStart);
+  canvas.elt.addEventListener("touchend", handleEnd);
+  canvas.elt.addEventListener("touchcancel", handleCancel);
+  canvas.elt.addEventListener("touchmove", handleMove);
+
+  // Sockets connection
+  socket = io();
 
   // First render
   resetObject();
   changeBrushSize(brushSizeInput.value);
-
-  // Sockets connection
-  socket = io();
 }
 
 function draw() {
   transparentGrid();
   drawCursor();
 
-  // The real draw
-  if (mouseIsPressed && mouseButton.left) {
-    drawGfx.stroke(currentColor);
+  // Paint current mouse position if mouse is pressed
+  // touch (for mobile) handled by touchController.js
+  if (!isTouchEnabled() && mouseIsPressed && mouseButton.left) {
     drawGfx.line(pmouseX, pmouseY, mouseX, mouseY);
   }
 
@@ -83,29 +104,23 @@ function draw() {
 
 // Draw preview cursor above drawGfx layer
 function drawCursor() {
+  if (isTouchEnabled()) return;
+
   overlayGfx.clear();
-
-  let c = color(currentColor);
-  c.setAlpha(100);
-
-  overlayGfx.fill(c);
   overlayGfx.circle(mouseX, mouseY, drawGfx.strokeWeight());
 }
 
 // Predetermined color swatch button using colors array
 function generateHTMLButtons() {
   for (const c of colors) {
-    let button = createButton(null);
+    let button = createButton("");
     button.parent("color-button-wrapper");
     button.class("color-button");
     button.style("background-color", c);
-    button.style("margin", "0 0.125rem");
     button.mousePressed(() => changeColor(button.elt));
 
-    // Set first color to draw to red
-    if (c === "red") {
-      changeColor(button.elt);
-    }
+    // Set first color to draw
+    if (c === currentColor) changeColor(button.elt);
   }
 }
 
@@ -120,13 +135,7 @@ function addIndexBy(n) {
 function drawObjectTemplate(index) {
   const img = spaceObjects[index].img;
 
-  drawGfx.image(
-    img,
-    imagePadding / 4,
-    imagePadding / 4,
-    width - imagePadding / 2,
-    height - imagePadding / 2,
-  );
+  drawGfx.image(img, (imagePadding * width) / 4, (imagePadding * height) / 4);
   objectTitle.innerHTML = `Object: ${spaceObjects[index].name}`;
 }
 
@@ -138,7 +147,6 @@ function resetObject() {
 
 // Draw transparent grid at the bottom of canvas
 // This grid doesn't drawn in drawGfx layer
-const GRID_SIZE = 10;
 function transparentGrid() {
   for (let x = 0; x < width / GRID_SIZE; x++) {
     for (let y = 0; y < height / GRID_SIZE; y++) {
@@ -155,12 +163,24 @@ function transparentGrid() {
 // Change current color
 function changeColor(button) {
   currentColor = button.style.backgroundColor;
+
+  // Draw color
+  drawGfx.stroke(currentColor);
+
+  // Cursor color
+  const c = color(currentColor);
+  c.setAlpha(CURSOR_OPACITY);
+  overlayGfx.fill(c);
+
   colorTitle.innerHTML = `Color: ${currentColor}`;
 }
 
 // Change brush size
 function changeBrushSize(value) {
-  drawGfx.strokeWeight(Number.parseFloat(value));
+  // Adjust for smaler or bigger screen
+  brushSize = (Number.parseInt(value) * width) / 500;
+  drawGfx.strokeWeight(brushSize);
+
   brushSizeTitle.innerHTML = `Size: ${value}`;
 }
 
@@ -174,4 +194,11 @@ function submit() {
   };
 
   socket.emit("draw", data);
+}
+
+// Check if CSS pointer is coarse (touchscreen) or solid (mouse)
+function isTouchEnabled() {
+  const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+
+  return isCoarsePointer && navigator.maxTouchPoints > 0;
 }
